@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="//cdn.jsdelivr.net/npm/phaser-ce@2.11.0/build/phaser.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/chance@1.0.16/chance.min.js"></script>
+</head>
+<body>
+  <script>
+
+    var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', {
+      create: create,
+      update: update
+    });
+
+    var chance = new Chance();  
+
+    var answer = "";
+    var question = "";
+    var rightAnswer = "";
+    var rightRand = 0;
+
+    var arrQuestion = ["turki", "iran", "mali", "india", "colombia", "amerika", "malaysia", "indonesia", "china", "japan"];
+
+    var testInput;
+  
+    // key variables
+    var keyEnter, keyBackSpace, keyQ, keyW, keyE, keyR, keyT, keyY, keyU, keyI, keyO, keyP, keyA, keyS, keyD, keyF, keyG, keyH, keyJ, keyK, keyL, keyZ, keyX, keyC, keyV, keyB, keyN, keyM;
+
+    // objects
+    var objAnswer, objQuestion;
+
+    function create() {
+      game.stage.backgroundColor = "#4488AA";
+
+      registerKeyboard();
+      randQuestion();
+      
+      var label = game.add.text(game.world.centerX - 0, 50, "Nama Negara", {
+        font: "32px Arial",
+        fill: "#222244",
+        align: "center"
+      });
+      label.anchor.setTo(0.5, 0.5);
+
+      objQuestion = game.add.text(game.world.centerX, 120, question, {
+        font: "65px Arial",
+        fill: "#ff4444",
+        align: "center"
+      });
+
+      label = game.add.text(game.world.centerX - 0, 170, "Ketik lalu enter untuk jawab", {
+        font: "32px Arial",
+        fill: "#222244",
+        align: "center"
+      });
+      label.anchor.setTo(0.5, 0.5);
+
+      objAnswer = game.add.text(game.world.centerX, 250, answer, {
+        font: "65px Arial",
+        fill: "#ff0044",
+        align: "center"
+      });
+
+      label.anchor.setTo(0.5, 0.5);
+      objAnswer.anchor.setTo(0.5, 0.5);
+      objQuestion.anchor.setTo(0.5, 0.5);
+    }
+
+    function update() {
+
+    }
+    
+
+    function randQuestion() {
+      if (arrQuestion.length <= 0) {
+        question = "-";
+
+        return
+      } 
+
+      rightRand = chance.integer({min: 0, max: arrQuestion.length - 1})
+
+      var tempq = arrQuestion[rightRand];
+      tempq = tempq.toUpperCase();
+
+      rightAnswer = tempq;
+      var arr = [];
+      var temp = ""      
+      
+      for (var i = 0; i < tempq.length; i++) {
+        arr[i] = tempq[i];
+      }      
+
+      for (var i = 0; i < tempq.length; i++) {
+        var rand = chance.integer({min: 0, max: arr.length - 1});
+        temp += arr[rand];
+
+        arr.splice(rand, 1);
+      }      
+
+
+      question =  temp;
+    }
+
+    function renderAnswer() {
+      objAnswer.text = answer;
+    }
+    
+    function renderQuestion() {
+      objQuestion.text = question;
+    }
+
+    function downListener() {
+      addAnswerText(chance.character({ casing: 'upper'})) 
+    }
+
+    function addAnswerText(char) {
+      answer += char;
+      renderAnswer();
+    }
+
+    function removeAnswerText(int) {
+      if (answer.length > 0) {
+        answer = answer.substring(0, answer.length - 1)
+      }
+      renderAnswer()
+    }
+
+    function checkAnswer() {
+      var right = rightAnswer.toLowerCase();
+      var ans = answer.toLowerCase();
+
+      if (right === ans) {
+        console.log("CORRECT");
+        
+        answer = "";
+        renderAnswer();
+
+        arrQuestion.splice(rightRand, 1);
+        randQuestion();
+        renderQuestion();
+
+        console.log("QUESTION LEFT: " + arrQuestion.length);
+      }
+    }
+
+    // Function Add Key Listener
+
+    function registerKeyboard() {
+      keyEnter = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
+      keyEnter.onDown.add(checkAnswer, this);
+
+      keyBackSpace = game.input.keyboard.addKey(Phaser.Keyboard.BACKSPACE);
+      keyBackSpace.onDown.add(onKeyBackSpaceDown, this);
+
+      keyQ = game.input.keyboard.addKey(Phaser.Keyboard.Q);
+      keyQ.onDown.add(onKeyQDown, this);
+
+      keyW = game.input.keyboard.addKey(Phaser.Keyboard.W);
+      keyW.onDown.add(onKeyWDown, this);
+
+      keyE = game.input.keyboard.addKey(Phaser.Keyboard.E);
+      keyE.onDown.add(onKeyEDown, this);
+
+      keyR = game.input.keyboard.addKey(Phaser.Keyboard.R);
+      keyR.onDown.add(onKeyRDown, this);
+
+      keyT = game.input.keyboard.addKey(Phaser.Keyboard.T);
+      keyT.onDown.add(onKeyTDown, this);
+
+      keyY = game.input.keyboard.addKey(Phaser.Keyboard.Y);
+      keyY.onDown.add(onKeyYDown, this);
+
+      keyU = game.input.keyboard.addKey(Phaser.Keyboard.U);
+      keyU.onDown.add(onKeyUDown, this);
+
+      keyI = game.input.keyboard.addKey(Phaser.Keyboard.I);
+      keyI.onDown.add(onKeyIDown, this);
+
+      keyO = game.input.keyboard.addKey(Phaser.Keyboard.O);
+      keyO.onDown.add(onKeyODown, this);
+
+      keyP = game.input.keyboard.addKey(Phaser.Keyboard.P);
+      keyP.onDown.add(onKeyPDown, this);
+
+      keyA = game.input.keyboard.addKey(Phaser.Keyboard.A);
+      keyA.onDown.add(onKeyADown, this);
+      
+      keyS = game.input.keyboard.addKey(Phaser.Keyboard.S);
+      keyS.onDown.add(onKeySDown, this);
+
+      keyD = game.input.keyboard.addKey(Phaser.Keyboard.D);
+      keyD.onDown.add(onKeyDDown, this);
+
+      keyF = game.input.keyboard.addKey(Phaser.Keyboard.F);
+      keyF.onDown.add(onKeyFDown, this);
+
+      keyG = game.input.keyboard.addKey(Phaser.Keyboard.G);
+      keyG.onDown.add(onKeyGDown, this);
+
+      keyH = game.input.keyboard.addKey(Phaser.Keyboard.H);
+      keyH.onDown.add(onKeyHDown, this);
+
+      keyJ = game.input.keyboard.addKey(Phaser.Keyboard.J);
+      keyJ.onDown.add(onKeyJDown, this);
+
+      keyK = game.input.keyboard.addKey(Phaser.Keyboard.K);
+      keyK.onDown.add(onKeyKDown, this);
+
+      keyL = game.input.keyboard.addKey(Phaser.Keyboard.L);
+      keyL.onDown.add(onKeyLDown, this);
+
+      keyZ = game.input.keyboard.addKey(Phaser.Keyboard.Z);
+      keyZ.onDown.add(onKeyZDown, this);
+
+      keyX = game.input.keyboard.addKey(Phaser.Keyboard.X);
+      keyX.onDown.add(onKeyXDown, this);
+
+      keyC = game.input.keyboard.addKey(Phaser.Keyboard.C);
+      keyC.onDown.add(onKeyCDown, this);
+
+      keyV = game.input.keyboard.addKey(Phaser.Keyboard.V);
+      keyV.onDown.add(onKeyVDown, this);
+
+      keyB = game.input.keyboard.addKey(Phaser.Keyboard.B);
+      keyB.onDown.add(onKeyBDown, this);
+
+      keyN = game.input.keyboard.addKey(Phaser.Keyboard.N);
+      keyN.onDown.add(onKeyNDown, this);
+
+      keyM = game.input.keyboard.addKey(Phaser.Keyboard.M);
+      keyM.onDown.add(onKeyMDown, this);
+
+
+      // game.input.keyboard.removeKeyCapture(Phaser.Keyboard.Q);
+      // game.input.keyboard.removeKeyCapture(Phaser.Keyboard.W);
+      // game.input.keyboard.removeKeyCapture(Phaser.Keyboard.E);
+      // game.input.keyboard.removeKeyCapture(Phaser.Keyboard.R);
+      // game.input.keyboard.removeKeyCapture(Phaser.Keyboard.T);
+      // game.input.keyboard.removeKeyCapture(Phaser.Keyboard.Y);
+      // game.input.keyboard.removeKeyCapture(Phaser.Keyboard.U);
+      // game.input.keyboard.removeKeyCapture(Phaser.Keyboard.I);
+      // game.input.keyboard.removeKeyCapture(Phaser.Keyboard.O);
+    }
+
+    function onKeyBackSpaceDown() {
+      removeAnswerText(1);
+    }
+
+    function onKeyQDown() {
+      addAnswerText("Q");
+    }
+
+    function onKeyWDown() {
+      addAnswerText("W");
+    }
+
+    function onKeyEDown() {
+      addAnswerText("E");
+    }
+
+    function onKeyRDown() {
+      addAnswerText("R");
+    }
+
+    function onKeyTDown() {
+      addAnswerText("T");
+    }
+
+    function onKeyYDown() {
+      addAnswerText("Y");
+    }
+
+    function onKeyUDown() {
+      addAnswerText("U");
+    }
+
+    function onKeyIDown() {
+      addAnswerText("I");
+    }
+
+    function onKeyODown() {
+      addAnswerText("O");
+    }
+
+    function onKeyPDown() {
+      addAnswerText("P");
+    }
+
+    function onKeyADown() {
+      addAnswerText("A");
+    }
+
+    function onKeySDown() {
+      addAnswerText("S");
+    }
+
+    function onKeyDDown() {
+      addAnswerText("D");
+    }
+
+    function onKeyFDown() {
+      addAnswerText("F");
+    }
+    
+    function onKeyGDown() {
+      addAnswerText("G");
+    }
+
+    function onKeyHDown() {
+      addAnswerText("H");
+    }
+
+    function onKeyJDown() {
+      addAnswerText("J");
+    }
+
+    function onKeyKDown() {
+      addAnswerText("K");
+    }
+
+    function onKeyLDown() {
+      addAnswerText("L");
+    }
+
+    function onKeyZDown() {
+      addAnswerText("Z");
+    }
+
+    function onKeyXDown() {
+      addAnswerText("X");
+    }
+
+    function onKeyCDown() {
+      addAnswerText("C");
+    }
+
+    function onKeyVDown() {
+      addAnswerText("V");
+    }
+
+    function onKeyBDown() {
+      addAnswerText("B");
+    }
+
+    function onKeyNDown() {
+      addAnswerText("N");
+    }
+
+    function onKeyMDown() {
+      addAnswerText("M");
+    }
+  </script> 
+</body>
+</html>
